@@ -8,12 +8,13 @@ export default function Player() {
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!audio || !currentTrack) return
+    const track = currentTrack
+    if (!audio || !track) return
 
     let cancelled = false
 
     async function updateSrcAndPlay() {
-      const src = currentTrack.streamUrl ?? (currentTrack.source === 'audius' ? await getStreamUrl(currentTrack.id) : '')
+      const src = track.streamUrl ?? (track.source === 'audius' ? await getStreamUrl(track.id) : '')
       if (cancelled || !audio) return
       if (src && audio.src !== src) {
         audio.src = src

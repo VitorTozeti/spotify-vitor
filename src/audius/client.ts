@@ -15,11 +15,12 @@ export async function searchTracks(query: string): Promise<Track[]> {
     source: 'audius' as const,
     title: track.title,
     artist: track.user?.name ?? 'Artista desconhecido',
-    artworkUrl: track.artwork?.['150x150'],
+    artworkUrl: track.artwork?._150x150,
     durationSeconds: track.duration,
   }))
 }
 
-export function getStreamUrl(trackId: string): Promise<string> {
-  return audius.tracks.getTrackStreamUrl({ trackId })
+export async function getStreamUrl(trackId: string): Promise<string> {
+  const { data } = await audius.tracks.streamTrack({ trackId })
+  return data
 }

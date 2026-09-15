@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { listDownloads, removeDownload } from '../db/db'
 import { useStore } from '../store/useStore'
 import TrackRow from '../components/TrackRow'
-import type { DownloadedTrack } from '../types'
+import type { DownloadedTrack, Track } from '../types'
 
 export default function Downloads() {
   const [downloads, setDownloads] = useState<DownloadedTrack[]>([])
@@ -12,9 +12,11 @@ export default function Downloads() {
     listDownloads().then(setDownloads)
   }, [])
 
-  function play(track: DownloadedTrack) {
-    const url = URL.createObjectURL(track.blob)
-    playTrack({ ...track, streamUrl: url }, downloads.map((d) => ({ ...d, streamUrl: URL.createObjectURL(d.blob) })))
+  function play(track: Track) {
+    const download = downloads.find((d) => d.id === track.id)
+    if (!download) return
+    const url = URL.createObjectURL(download.blob)
+    playTrack({ ...download, streamUrl: url }, downloads.map((d) => ({ ...d, streamUrl: URL.createObjectURL(d.blob) })))
   }
 
   async function remove(id: string) {
