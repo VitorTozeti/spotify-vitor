@@ -24,7 +24,7 @@ export default function Search() {
 
   async function handleDownload(track: Track) {
     const { getStreamUrl } = await import('../audius/client')
-    const url = track.streamUrl ?? getStreamUrl(track.id)
+    const url = track.streamUrl ?? (await getStreamUrl(track.id))
     const response = await fetch(url)
     const blob = await response.blob()
     await saveDownload({ ...track, blob, downloadedAt: Date.now() })

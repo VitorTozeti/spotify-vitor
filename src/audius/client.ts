@@ -20,6 +20,6 @@ export async function searchTracks(query: string): Promise<Track[]> {
   }))
 }
 
-export function getStreamUrl(trackId: string): string {
+export function getStreamUrl(trackId: string): Promise<string> {
   return audius.tracks.getTrackStreamUrl({ trackId })
 }

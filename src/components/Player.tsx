@@ -10,15 +10,26 @@ export default function Player() {
     const audio = audioRef.current
     if (!audio || !currentTrack) return
 
-    const src = currentTrack.streamUrl ?? (currentTrack.source === 'audius' ? getStreamUrl(currentTrack.id) : '')
-    if (src && audio.src !== src) {
-      audio.src = src
+    let cancelled = false
+
+    async function updateSrcAndPlay() {
+      const src = currentTrack.streamUrl ?? (currentTrack.source === 'audius' ? await getStreamUrl(currentTrack.id) : '')
+      if (cancelled || !audio) return
+      if (src && audio.src !== src) {
+        audio.src = src
+      }
+
+      if (isPlaying) {
+        audio.play().catch(() => {})
+      } else {
+        audio.pause()
+      }
     }
 
-    if (isPlaying) {
-      audio.play().catch(() => {})
-    } else {
-      audio.pause()
+    updateSrcAndPlay()
+
+    return () => {
+      cancelled = true
     }
   }, [currentTrack, isPlaying])
 
